@@ -1,0 +1,8 @@
+{
+  "name": "Pixel Explorer Portfolio",
+  "description": "A pixel-art style interactive portfolio designed as a 'My Computer' interface with mini-games.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "AI_AGENT"
+  ]
+}
