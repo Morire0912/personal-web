@@ -36,21 +36,7 @@ const extractBvid = (url: string): string | null => {
 // B站视频播放器
 const BilibiliPlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
   const bvid = video.bvid || extractBvid(video.url);
-  const [realViews, setRealViews] = useState<string | null>(null);
   const { ref, isInView } = useInView();
-
-  useEffect(() => {
-    if (bvid) {
-      fetch(`/api/bilibili/stat/${bvid}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.view) {
-            setRealViews(data.view.toLocaleString());
-          }
-        })
-        .catch(() => setRealViews(null));
-    }
-  }, [bvid]);
 
   if (!bvid) {
     return (
@@ -97,7 +83,7 @@ const BilibiliPlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
             fontFamily: "'Noto Sans SC', 'Microsoft YaHei', sans-serif",
           }}
         >
-          🔥 播放量 {realViews || video.views}
+          🔥 播放量 {video.views}
         </span>
       </div>
     </motion.div>

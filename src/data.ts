@@ -409,7 +409,7 @@ export const LILITH_PROJECT: LilithProject = {
       platform: 'bilibili',
       url: 'https://www.bilibili.com/video/BV1bZtvzBEaR/',
       bvid: 'BV1bZtvzBEaR',
-      views: '332w',
+      views: '333w',
     },
     {
       id: 'l-bv-2',
@@ -449,7 +449,7 @@ export const LILITH_PROJECT: LilithProject = {
       platform: 'bilibili',
       url: 'https://www.bilibili.com/video/BV1pbtcz8EHF/',
       bvid: 'BV1pbtcz8EHF',
-      views: '?',
+      views: '31w',
     },
   ],
   playlistUrl: 'https://space.bilibili.com/3494362379979305/lists/3878816?type=season',
