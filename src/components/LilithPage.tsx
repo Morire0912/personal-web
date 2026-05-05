@@ -1,10 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LILITH_PROJECT, LilithVideo } from '../data';
 import { motion } from 'motion/react';
 
 interface LilithPageProps {
   onBack: () => void;
 }
+
+// 检测元素是否在视口内
+const useInView = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(true);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => setIsInView(entry.isIntersecting));
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, isInView };
+};
 
 // 从B站URL中提取BV号
 const extractBvid = (url: string): string | null => {
@@ -16,12 +37,13 @@ const extractBvid = (url: string): string | null => {
 const BilibiliPlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
   const bvid = video.bvid || extractBvid(video.url);
   const [realViews, setRealViews] = useState<string | null>(null);
+  const { ref, isInView } = useInView();
 
   useEffect(() => {
     if (bvid) {
       fetch(`/api/bilibili/stat/${bvid}`)
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data.view) {
             setRealViews(data.view.toLocaleString());
           }
@@ -47,22 +69,36 @@ const BilibiliPlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
       animate={{ opacity: 1, scale: 1 }}
       className="pop-card mb-4"
     >
-      <div className="pop-video-container mb-3">
-        <iframe
-          src={`//player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=0`}
-          className="w-full"
-          style={{ height: '280px', border: 'none' }}
-          allowFullScreen
-        />
+      <div
+        ref={ref}
+        className="pop-video-container mb-3"
+        style={{ aspectRatio: '16/9', background: '#fff' }}
+      >
+        {isInView && (
+          <iframe
+            src={`//player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&q=80&danmaku=0&autoplay=0`}
+            style={{ width: '100%', height: '100%', border: 'none' }}
+            allowFullScreen
+          />
+        )}
       </div>
-      <div className="flex items-center justify-between px-1">
-        <span className="font-bold text-sm truncate flex-1">{video.title}</span>
-        <div className="flex items-center gap-2">
-          <span className="pop-tag yellow text-xs">📺 {video.views}</span>
-          {realViews && (
-            <span className="pop-tag text-xs">🔥 {realViews}</span>
-          )}
-        </div>
+      <div className="flex items-center justify-between px-1" style={{ lineHeight: '2' }}>
+        <span
+          className="font-bold truncate flex-1"
+          style={{ fontFamily: "'Noto Sans SC', 'Microsoft YaHei', sans-serif", fontSize: '18px' }}
+        >
+          {video.title}
+        </span>
+        <span
+          className="pop-tag"
+          style={{
+            fontSize: '14px',
+            padding: '2px 6px',
+            fontFamily: "'Noto Sans SC', 'Microsoft YaHei', sans-serif",
+          }}
+        >
+          🔥 播放量 {realViews || video.views}
+        </span>
       </div>
     </motion.div>
   );
@@ -71,6 +107,7 @@ const BilibiliPlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
 // YouTube视频播放器
 const YouTubePlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
   const videoId = video.url.match(/[?&]v=([^&]+)/)?.[1];
+  const { ref, isInView } = useInView();
 
   if (!videoId) {
     return (
@@ -88,56 +125,68 @@ const YouTubePlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
       animate={{ opacity: 1, scale: 1 }}
       className="pop-card mb-4"
     >
-      <div className="pop-video-container mb-3">
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
-          className="w-full"
-          style={{ height: '280px', border: 'none' }}
-          allowFullScreen
-        />
+      <div
+        ref={ref}
+        className="pop-video-container mb-3"
+        style={{ aspectRatio: '16/9', background: '#fff' }}
+      >
+        {isInView && (
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=0`}
+            style={{ width: '100%', height: '100%', border: 'none' }}
+            allowFullScreen
+          />
+        )}
       </div>
-      <div className="flex items-center justify-between px-1">
-        <span className="font-bold text-sm truncate flex-1">{video.title}</span>
-        <span className="pop-tag yellow text-xs">📺 {video.views}</span>
+      <div className="flex items-center justify-between px-1" style={{ lineHeight: '2' }}>
+        <span
+          className="font-bold truncate flex-1"
+          style={{ fontFamily: "'Noto Sans SC', 'Microsoft YaHei', sans-serif", fontSize: '18px' }}
+        >
+          {video.title}
+        </span>
+        <span
+          className="pop-tag"
+          style={{
+            fontSize: '14px',
+            padding: '2px 6px',
+            fontFamily: "'Noto Sans SC', 'Microsoft YaHei', sans-serif",
+          }}
+        >
+          🔥 播放量 {video.views}
+        </span>
       </div>
     </motion.div>
   );
 };
 
 export const LilithPage: React.FC<LilithPageProps> = ({ onBack }) => {
-  const bilibiliVideos = LILITH_PROJECT.videos.filter(v => v.platform === 'bilibili');
-  const youtubeVideos = LILITH_PROJECT.videos.filter(v => v.platform === 'youtube');
+  const bilibiliVideos = LILITH_PROJECT.videos.filter((v) => v.platform === 'bilibili');
+  const youtubeVideos = LILITH_PROJECT.videos.filter((v) => v.platform === 'youtube');
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold mb-2" style={{ textShadow: '2px 2px 0 #ff5ba0' }}>
-          {LILITH_PROJECT.title}
-        </h2>
-        <p className="text-base opacity-70">{LILITH_PROJECT.description}</p>
-      </div>
-
-      <div className="flex-1 overflow-auto pr-2">
-        {/* B站合集 */}
-        {LILITH_PROJECT.playlistUrl && (
-          <div className="mb-4">
-            <a 
-              href={LILITH_PROJECT.playlistUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="pop-back-btn inline-flex"
-            >
-              <span>▶</span> 查看B站完整合集
-            </a>
-          </div>
-        )}
-
+    <div className="h-full overflow-auto">
+      <div className="mx-4 pt-4">
         {/* B站视频 */}
         {bilibiliVideos.length > 0 && (
           <div className="mb-6">
             <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-              <span className="pop-tag">Bilibili</span>
-              <span className="text-sm opacity-60">({bilibiliVideos.length} 个视频)</span>
+              <span
+                className="pop-tag"
+                style={{
+                  fontSize: '22px',
+                  padding: '2px 8px',
+                  fontFamily: "'Luckiest Guy', cursive",
+                  letterSpacing: '1px',
+                  fontWeight: 300,
+                  width: '110px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                Bilibili
+              </span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {bilibiliVideos.map((video) => (
@@ -151,8 +200,21 @@ export const LilithPage: React.FC<LilithPageProps> = ({ onBack }) => {
         {youtubeVideos.length > 0 && (
           <div className="mb-6">
             <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-              <span className="pop-tag blue">YouTube</span>
-              <span className="text-sm opacity-60">({youtubeVideos.length} 个视频)</span>
+              <span
+                className="pop-tag blue"
+                style={{
+                  fontSize: '22px',
+                  padding: '2px 8px',
+                  fontFamily: "'Luckiest Guy', cursive",
+                  fontWeight: 300,
+                  width: '110px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                YouTube
+              </span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {youtubeVideos.map((video) => (

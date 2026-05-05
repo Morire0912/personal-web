@@ -16,94 +16,159 @@ const categoryColors: Record<string, string> = {
   '休闲/其他': '#ffb74d',
 };
 
+// 分类装饰图案
+const categoryPatterns: Record<string, string> = {
+  'FPS': '🔫',
+  '二游': '✨',
+  'MOBA': '⚔️',
+  '3A': '🎮',
+  'roguelite': '🎲',
+  '休闲/其他': '🌱',
+};
+
+// 判断游戏是否有详细信息
+const hasDetails = (game: { rank?: string; hours?: string; spending?: string; note?: string }) => {
+  return !!(game.rank || game.hours || game.spending || game.note);
+};
+
 export const GamingPage: React.FC<GamingPageProps> = ({ onBack }) => {
   return (
-    <div className="h-full flex flex-col">
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold" style={{ textShadow: '2px 2px 0 #ff5ba0' }}>
-          游戏经历
-        </h2>
-        <p className="text-sm opacity-60">多年游戏玩家，涉猎广泛</p>
-      </div>
+    <div className="h-full overflow-auto">
+      <div className="mx-4 pt-4 pb-6">
+        <div className="space-y-5">
+          {GAMING_EXPERIENCE.map((cat, catIndex) => {
+            const color = categoryColors[cat.category] || '#ff5ba0';
+            const pattern = categoryPatterns[cat.category] || '⭐';
 
-      <div className="flex-1 overflow-auto pr-2">
-        <div className="space-y-6">
-          {GAMING_EXPERIENCE.map((cat, catIndex) => (
-            <motion.div
-              key={cat.category}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: catIndex * 0.1 }}
-              className="pop-card"
-            >
-              {/* 分类标题 */}
-              <div 
-                className="pop-card-title flex items-center gap-2"
-                style={{ 
-                  borderBottomColor: categoryColors[cat.category] || '#ff5ba0',
-                  color: categoryColors[cat.category] || '#ff5ba0',
-                }}
+            return (
+              <motion.div
+                key={cat.category}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: catIndex * 0.06 }}
               >
-                <span 
-                  className="inline-block w-3 h-3 rounded-sm"
-                  style={{ backgroundColor: categoryColors[cat.category] || '#ff5ba0', border: '2px solid black' }}
-                />
-                {cat.category}
-              </div>
-
-              {/* 游戏列表 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {cat.games.map((game, gameIndex) => (
-                  <motion.div
-                    key={`${cat.category}-${gameIndex}`}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: catIndex * 0.1 + gameIndex * 0.03 }}
-                    className="flex items-start gap-3 p-2 rounded"
-                    style={{ 
-                      background: 'rgba(255,255,255,0.5)',
-                      border: '2px solid #1a1a1a',
+                {/* 分类标题 */}
+                <div className="mb-2 flex items-center gap-2">
+                  <span
+                    className="inline-block px-3 py-0.5 text-base font-black italic"
+                    style={{
+                      background: color,
+                      border: '3px solid #1a1a1a',
+                      borderRadius: '6px',
+                      color: '#1a1a1a',
+                      fontFamily: "'Barlow', sans-serif",
+                      fontStyle: 'italic',
+                      fontWeight: 900,
+                      boxShadow: '3px 3px 0 #1a1a1a',
+                      letterSpacing: '1px',
                     }}
                   >
-                    {/* 游戏封面/图标占位 */}
-                    <div 
-                      className="w-12 h-12 flex-shrink-0 flex items-center justify-center text-xl"
-                      style={{ 
-                        background: categoryColors[cat.category] || '#ff5ba0',
-                        border: '2px solid #1a1a1a',
-                        boxShadow: '2px 2px 0 #1a1a1a',
-                      }}
-                    >
-                      {game.coverImage ? (
-                        <img src={game.coverImage} alt={game.name} className="w-full h-full object-cover" />
-                      ) : (
-                        '🎮'
-                      )}
-                    </div>
+                    {cat.category}
+                  </span>
 
-                    {/* 游戏信息 */}
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-sm truncate">{game.name}</div>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {game.hours && (
-                          <span className="text-xs bg-yellow-200 border border-black px-1">⏱ {game.hours}</span>
-                        )}
-                        {game.rank && (
-                          <span className="text-xs bg-pink-200 border border-black px-1">🏆 {game.rank}</span>
-                        )}
-                        {game.spending && (
-                          <span className="text-xs bg-blue-200 border border-black px-1">💎 {game.spending}</span>
-                        )}
-                        {game.note && (
-                          <span className="text-xs bg-gray-200 border border-black px-1">{game.note}</span>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+                </div>
+
+                {/* 票根墙网格 */}
+                <div className="gaming-wall">
+                  {cat.games.map((game, i) => {
+                    const detailed = hasDetails(game);
+                    return (
+                      <motion.div
+                        key={game.name}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: catIndex * 0.06 + i * 0.02 }}
+                        className={`gaming-ticket ${detailed ? 'gaming-ticket-rare' : ''}`}
+                        style={{ '--cat-color': color } as React.CSSProperties}
+                      >
+                        {/* 正面 */}
+                        <div className="gaming-ticket-front">
+                          {/* 顶部锯齿 */}
+                          <div
+                            className="gaming-ticket-serrated-top"
+                            style={{ background: color }}
+                          />
+
+                          {/* 内容区 */}
+                          <div className="gaming-ticket-body">
+                            {/* emoji */}
+                            <div className="gaming-ticket-header">
+                              <span className="gaming-ticket-emoji">{pattern}</span>
+                            </div>
+
+                            {/* 游戏名 — 占满剩余空间 */}
+                            <div className="gaming-ticket-name">{game.name}</div>
+
+                            {/* 底部条码 */}
+                            <div className="gaming-ticket-barcode">
+                              {Array.from({ length: 8 }).map((_, j) => (
+                                <span
+                                  key={j}
+                                  className="gaming-ticket-bar"
+                                  style={{
+                                    width: j % 3 === 0 ? '3px' : '2px',
+                                    height: '100%',
+                                    background: j % 2 === 0 ? '#1a1a1a' : color,
+                                    opacity: j % 2 === 0 ? 1 : 0.6,
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 底部锯齿 */}
+                          <div
+                            className="gaming-ticket-serrated-bottom"
+                            style={{ background: color }}
+                          />
+                        </div>
+
+                        {/* 背面 - hover 显示 */}
+                        <div className="gaming-ticket-back">
+                          <div className="gaming-ticket-back-name">{game.name}</div>
+                          {detailed ? (
+                            <div className="gaming-ticket-back-meta">
+                              {game.rank && (
+                                <div className="gaming-ticket-back-line">
+                                  <span style={{ color: '#ffeb3b' }}>★</span>
+                                  <span>{game.rank}</span>
+                                </div>
+                              )}
+                              {game.hours && (
+                                <div className="gaming-ticket-back-line">
+                                  <span>⏱</span>
+                                  <span>{game.hours}</span>
+                                </div>
+                              )}
+                              {game.spending && (
+                                <div className="gaming-ticket-back-line">
+                                  <span>💎</span>
+                                  <span>{game.spending}</span>
+                                </div>
+                              )}
+                              {game.note && (
+                                <div className="gaming-ticket-back-line">
+                                  <span>📝</span>
+                                  <span>{game.note}</span>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="gaming-ticket-back-empty">
+                              <span style={{ fontSize: '28px' }}>💾</span>
+                              <span>NO DATA</span>
+                            </div>
+                          )}
+                          {/* 撕下虚线 */}
+                          <div className="gaming-ticket-tear">✂ CUT HERE</div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>

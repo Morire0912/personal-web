@@ -15,20 +15,17 @@ export default function App() {
     <>
       {!bootComplete && <BootScreen onComplete={() => setBootComplete(true)} />}
       
-      <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden" style={{ background: '#008080' }}>
         <MosaicBackground />
         
         <main 
-          className="relative z-10 transition-all duration-300"
+          className="relative z-10"
           style={{
-            width: isFullscreen ? '100vw' : 'min(1200px, 95vw)',
-            height: isFullscreen ? '100vh' : 'min(800px, 90vh)',
-            padding: isFullscreen ? '0' : '16px',
+            width: '75vw',
+            height: '80vh',
           }}
         >
-          <div className="w-full h-full flex items-center justify-center">
-            <Explorer isFullscreen={isFullscreen} onToggleFullscreen={toggleFullscreen} />
-          </div>
+          <Explorer isFullscreen={isFullscreen} onToggleFullscreen={toggleFullscreen} />
         </main>
       </div>
     </>

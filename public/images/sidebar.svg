@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="1200" viewBox="0 0 72 1200">
+  <rect width="72" height="1200" fill="#ff5ba0"/>
+  
+  <pattern id="bd" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
+    <circle cx="9" cy="9" r="4.5" fill="rgba(0,0,0,0.22)"/>
+  </pattern>
+  
+  <pattern id="sd" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+    <circle cx="4" cy="4" r="2" fill="rgba(0,0,0,0.25)"/>
+  </pattern>
+  
+  <rect x="0" y="0" width="72" height="790" fill="url(#bd)"/>
+  
+  <path d="M0,790 L6,780 L12,790 L18,780 L24,790 L30,780 L36,790 L42,780 L48,790 L54,780 L60,790 L66,780 L72,790 L72,802 L66,812 L60,802 L54,812 L48,802 L42,812 L36,802 L30,812 L24,802 L18,812 L12,802 L6,812 L0,802 Z" fill="#ffeb3b" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+  
+  <rect x="0" y="812" width="72" height="388" fill="url(#sd)"/>
+</svg>
