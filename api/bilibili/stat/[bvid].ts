@@ -9,7 +9,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const response = await axios.get(`https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`);
+    const response = await axios.get(`https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://www.bilibili.com',
+      },
+    });
     const apiData = response.data as any;
     if (apiData && apiData.data) {
       const stat = apiData.data.stat;
