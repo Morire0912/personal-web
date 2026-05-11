@@ -590,7 +590,7 @@ export const GAMING_EXPERIENCE: GameCategory[] = [
       { name: 'APEX', hours: '3000+小时', rank: '多赛季竞技场/大逃杀大师' },
       { name: 'CS', hours: '2000+小时', rank: '完美平台 A+' },
       { name: '守望先锋', hours: '1000+小时', rank: '钻石5/决斗领域重装传奇，输出/支援全明星' },
-      { name: '无畏契约', hours: '800+', rank: '钻石三99分' },
+      { name: '无畏契约', hours: '800+小时', rank: '钻石三99分' },
       { name: '三角洲行动', rank: '全面战场统帅' },
       { name: '战地1', hours: '300+小时' },
       { name: '战地5' },
