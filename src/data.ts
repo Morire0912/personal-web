@@ -151,15 +151,6 @@ export interface Resume {
 
 export const DRIVES: Drive[] = [
   {
-    id: 'E',
-    label: '个人简历',
-    name: '个人简历',
-    icon: 'doc',
-    iconImage: '/images/resume-icon.png',
-    description: '个人简介与联系方式',
-    driveLetter: 'C:',
-  },
-  {
     id: 'D',
     label: '广告拆解',
     name: '广告拆解案',

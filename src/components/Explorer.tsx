@@ -122,7 +122,6 @@ type ContentView = 'root' | 'drive-D' | 'drive-E' | 'drive-F' | 'lilith' | 'youz
 
 // 侧边栏项目配置
 const SIDEBAR_ITEMS: { view: ContentView; icon: string; label: string }[] = [
-  { view: 'drive-E', icon: '/images/resume-icon.png', label: '个人简历' },
   { view: 'drive-D', icon: '/images/ad-breakdown-icon.png', label: '广告拆解' },
   { view: 'lilith', icon: '/images/lilith-logo.png', label: '莉莉丝项目' },
   { view: 'youzhiqu', icon: '/images/youzhiqu-logo.png', label: '游之趣项目' },
