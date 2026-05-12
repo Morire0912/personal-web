@@ -288,7 +288,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
         <AvatarPanel />
 
         {/* 右侧区域 */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div className="pop-main-area" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {/* 工具栏 - 右移 */}
           <div className="pop-toolbar">
             <button
