@@ -1206,13 +1206,3 @@ html, body {
     animation: none !important;
   }
 }
-
-/* ==================== 1080p 分辨率适配 ==================== */
-@media (max-width: 1920px) {
-  .pop-main-area {
-    transform: scale(0.75);
-    transform-origin: top left;
-    width: 133.33%;
-    height: 133.33%;
-  }
-}
