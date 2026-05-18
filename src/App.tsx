@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Explorer } from './components/Explorer';
 import { MosaicBackground } from './components/MosaicBackground';
 import { BootScreen } from './components/BootScreen';
 
+const DESIGN_WIDTH = 1920;
+const DESIGN_HEIGHT = 980;
+
 export default function App() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [bootComplete, setBootComplete] = useState(false);
+  const [desktopScale, setDesktopScale] = useState(1);
+
+  useEffect(() => {
+    const updateScale = () => {
+      const availableWidth = window.innerWidth * 0.75;
+      const availableHeight = window.innerHeight * 0.8;
+      setDesktopScale(Math.min(availableWidth / DESIGN_WIDTH, availableHeight / DESIGN_HEIGHT, 1));
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -18,14 +34,24 @@ export default function App() {
       <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden" style={{ background: '#008080' }}>
         <MosaicBackground />
         
-        <main 
-          className="relative z-10"
+        <main
+          className="relative z-10 flex items-center justify-center"
           style={{
-            width: '75vw',
-            height: '80vh',
+            width: `${DESIGN_WIDTH * desktopScale}px`,
+            height: `${DESIGN_HEIGHT * desktopScale}px`,
           }}
         >
-          <Explorer isFullscreen={isFullscreen} onToggleFullscreen={toggleFullscreen} />
+          <div
+            style={{
+              width: `${DESIGN_WIDTH}px`,
+              height: `${DESIGN_HEIGHT}px`,
+              transform: `scale(${desktopScale})`,
+              transformOrigin: 'center center',
+              flexShrink: 0,
+            }}
+          >
+            <Explorer isFullscreen={isFullscreen} onToggleFullscreen={toggleFullscreen} />
+          </div>
         </main>
       </div>
     </>
