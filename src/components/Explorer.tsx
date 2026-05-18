@@ -358,20 +358,16 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   className="flex items-center justify-center h-full"
                   style={{ position: 'relative', zIndex: 1 }}
                 >
-                  <div className="flex flex-col items-center" style={{ gap: '14px', transform: 'translateY(-15px)' }}>
+                  <div className="pop-home-layout">
                     <img
                       src="/images/欢迎语.png"
                       alt="欢迎语"
+                      className="pop-home-welcome"
                       style={{
-                        maxWidth: '820px',
-                        width: '100%',
-                        height: 'auto',
-                        objectFit: 'contain',
                         imageRendering: 'auto',
-                        transform: 'translate(-27px, -60px) scale(0.95)',
                       }}
                     />
-                    <div className="flex" style={{ justifyContent: 'space-evenly', width: '100%', transform: 'scale(0.9) translateY(-156px) translateX(-21px)' }}>
+                    <div className="pop-home-drives">
                       {DRIVES.map((drive) => (
                         <div
                           key={drive.id}
@@ -422,22 +418,15 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                         </div>
                       ))}
                     </div>
+                    <img
+                      src="/images/keep-on-keeping-on.png"
+                      alt="keep on keeping on"
+                      className="pop-home-quote"
+                      style={{
+                        imageRendering: 'auto',
+                      }}
+                    />
                   </div>
-                  <img
-                    src="/images/keep-on-keeping-on.png"
-                    alt="keep on keeping on"
-                    style={{
-                      position: 'absolute',
-                      bottom: '30px',
-                      left: '50%',
-                      transform: 'translate(calc(-50% - 38px), -40px)',
-                      maxWidth: '600px',
-                      width: '90%',
-                      height: 'auto',
-                      objectFit: 'contain',
-                      imageRendering: 'auto',
-                    }}
-                  />
                 </motion.div>
               )}
 

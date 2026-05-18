@@ -333,6 +333,93 @@ html, body {
   white-space: nowrap;
 }
 
+.pop-home-layout {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: clamp(18px, 4vh, 54px) clamp(28px, 5vw, 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2.2vh, 30px);
+}
+
+.pop-home-welcome {
+  width: min(78%, 820px);
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.pop-home-drives {
+  width: min(100%, 1120px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  gap: clamp(8px, 1.4vw, 24px);
+  flex-shrink: 0;
+}
+
+.pop-home-drives .pop-drive {
+  width: clamp(150px, 13vw, 216px);
+  padding: clamp(8px, 1.3vw, 20px);
+}
+
+.pop-home-drives .pop-drive-icon {
+  width: clamp(74px, 7vw, 112px);
+  height: clamp(74px, 7vw, 112px);
+  margin-bottom: clamp(10px, 1.5vh, 20px);
+}
+
+.pop-home-drives .pop-drive-label {
+  font-size: clamp(16px, 1.2vw, 22px);
+  padding: 5px 12px;
+}
+
+.pop-home-quote {
+  width: min(52%, 600px);
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+@media (max-height: 820px) and (min-width: 900px) {
+  .pop-home-layout {
+    padding: 12px clamp(24px, 4vw, 58px) 16px;
+    gap: clamp(8px, 1.3vh, 16px);
+  }
+
+  .pop-home-welcome {
+    width: min(72%, 760px);
+  }
+
+  .pop-home-drives {
+    width: min(100%, 1060px);
+  }
+
+  .pop-home-drives .pop-drive {
+    width: clamp(138px, 12vw, 190px);
+    padding: 6px 8px;
+  }
+
+  .pop-home-drives .pop-drive-icon {
+    width: clamp(66px, 6vw, 92px);
+    height: clamp(66px, 6vw, 92px);
+    margin-bottom: 8px;
+  }
+
+  .pop-home-drives .pop-drive-label {
+    font-size: clamp(15px, 1.05vw, 18px);
+    padding: 4px 10px;
+    border-width: 2px;
+  }
+
+  .pop-home-quote {
+    width: min(46%, 520px);
+  }
+}
+
 /* ==================== 装饰元素动画 ==================== */
 @keyframes starTwinkle {
   0%, 100% { opacity: 0.7; transform: scale(1); }
