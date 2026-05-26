@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DRIVES, C_FOLDERS, Drive } from '../data';
 import { motion, AnimatePresence } from 'motion/react';
+import { gsap } from 'gsap';
 import { AdBreakdownPage } from './AdBreakdownPage';
 import { LilithPage } from './LilithPage';
 import { YouzhiquPage } from './YouzhiquPage';
@@ -191,6 +192,41 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
   const [view, setView] = useState<ContentView>('root');
   const [isShaking, setIsShaking] = useState(false);
   const [showLockWarning, setShowLockWarning] = useState(false);
+  const rootViewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (view !== 'root' || !rootViewRef.current) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ctx = gsap.context(() => {
+      const drives = gsap.utils.toArray<HTMLElement>('.pop-drive');
+      gsap.set(['.home-welcome-gsap', '.home-quote-gsap', ...drives], {
+        willChange: 'transform, opacity',
+      });
+
+      const timeline = gsap.timeline({
+        defaults: { ease: 'power3.out' },
+        onComplete: () => {
+          gsap.set(drives, { clearProps: 'transform,opacity,willChange' });
+          gsap.set(['.home-welcome-gsap', '.home-quote-gsap'], {
+            clearProps: 'opacity,willChange',
+          });
+        },
+      });
+
+      timeline
+        .fromTo('.home-welcome-gsap', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.18 }, 0)
+        .fromTo(
+          drives,
+          { autoAlpha: 0, y: 14, scale: 0.96 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.32, stagger: 0.045 },
+          0.03
+        )
+        .fromTo('.home-quote-gsap', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.22 }, 0.16);
+    }, rootViewRef);
+
+    return () => ctx.revert();
+  }, [view]);
 
   const handleSearchClick = () => {
     if (isShaking) return;
@@ -346,15 +382,16 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
               }}
             />
             <PopDecorations />
-            <AnimatePresence mode="wait">
+            <AnimatePresence initial={false}>
               {/* 根目录 - 三个磁盘 */}
               {view === 'root' && (
                 <motion.div
+                  ref={rootViewRef}
                   key="root"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.12 }}
                   className="flex items-center justify-center h-full"
                   style={{ position: 'relative', zIndex: 1 }}
                 >
@@ -362,6 +399,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                     <img
                       src="/images/欢迎语.png"
                       alt="欢迎语"
+                      className="home-welcome-gsap"
                       style={{
                         maxWidth: '820px',
                         width: '100%',
@@ -371,7 +409,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                         transform: 'translate(-27px, -60px) scale(0.95)',
                       }}
                     />
-                    <div className="flex" style={{ justifyContent: 'space-evenly', width: '100%', transform: 'scale(0.9) translateY(-156px) translateX(-21px)' }}>
+                    <div className="flex" style={{ justifyContent: 'space-evenly', width: '100%', transform: 'scale(0.9) translateY(-169px) translateX(-21px)' }}>
                       {DRIVES.map((drive) => (
                         <div
                           key={drive.id}
@@ -426,6 +464,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   <img
                     src="/images/keep-on-keeping-on.png"
                     alt="keep on keeping on"
+                    className="home-quote-gsap"
                     style={{
                       position: 'absolute',
                       bottom: '30px',
@@ -447,8 +486,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   key="drive-D"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.12 }}
                   className="h-full"
                   style={{ position: 'relative', zIndex: 1 }}
                 >
@@ -462,8 +501,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   key="drive-E"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.12 }}
                   className="h-full"
                   style={{ position: 'relative', zIndex: 1 }}
                 >
@@ -477,8 +516,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   key="drive-F"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.12 }}
                   className="h-full"
                   style={{ position: 'relative', zIndex: 1 }}
                 >
@@ -492,8 +531,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   key="lilith"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.12 }}
                   className="h-full"
                   style={{ position: 'relative', zIndex: 1 }}
                 >
@@ -507,8 +546,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   key="youzhiqu"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.12 }}
                   className="h-full"
                   style={{ position: 'relative', zIndex: 1 }}
                 >
@@ -522,8 +561,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   key="credits"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.12 }}
                   className="h-full"
                   style={{ position: 'relative', zIndex: 1 }}
                 >

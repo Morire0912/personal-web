@@ -18,7 +18,7 @@ const useInView = () => {
       (entries) => {
         entries.forEach((entry) => setIsInView(entry.isIntersecting));
       },
-      { threshold: 0.1 }
+      { rootMargin: '200px 0px', threshold: 0.1 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -34,7 +34,7 @@ const extractBvid = (url: string): string | null => {
 };
 
 // B站视频播放器
-const BilibiliPlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
+const BilibiliPlayer: React.FC<{ video: LilithVideo }> = React.memo(({ video }) => {
   const bvid = video.bvid || extractBvid(video.url);
   const { ref, isInView } = useInView();
 
@@ -63,6 +63,8 @@ const BilibiliPlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
         {isInView && (
           <iframe
             src={`//player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&q=80&danmaku=0&autoplay=0`}
+            title={video.title}
+            loading="lazy"
             style={{ width: '100%', height: '100%', border: 'none' }}
             allowFullScreen
           />
@@ -88,10 +90,10 @@ const BilibiliPlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
       </div>
     </motion.div>
   );
-};
+});
 
 // YouTube视频播放器
-const YouTubePlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
+const YouTubePlayer: React.FC<{ video: LilithVideo }> = React.memo(({ video }) => {
   const videoId = video.url.match(/[?&]v=([^&]+)/)?.[1];
   const { ref, isInView } = useInView();
 
@@ -119,6 +121,8 @@ const YouTubePlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
         {isInView && (
           <iframe
             src={`https://www.youtube.com/embed/${videoId}?autoplay=0`}
+            title={video.title}
+            loading="lazy"
             style={{ width: '100%', height: '100%', border: 'none' }}
             allowFullScreen
           />
@@ -144,7 +148,7 @@ const YouTubePlayer: React.FC<{ video: LilithVideo }> = ({ video }) => {
       </div>
     </motion.div>
   );
-};
+});
 
 export const LilithPage: React.FC<LilithPageProps> = ({ onBack }) => {
   const bilibiliVideos = LILITH_PROJECT.videos.filter((v) => v.platform === 'bilibili');

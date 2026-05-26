@@ -25,7 +25,11 @@ const AdCard: React.FC<{ ad: AdBreakdown; index: number }> = ({ ad, index }) => 
     );
 
     observer.observe(video);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      video.pause();
+      video.load();
+    };
   }, []);
 
   return (
@@ -57,6 +61,7 @@ const AdCard: React.FC<{ ad: AdBreakdown; index: number }> = ({ ad, index }) => 
             <video
               ref={videoRef}
               controls
+              preload="metadata"
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               poster={ad.coverImage || undefined}
             >

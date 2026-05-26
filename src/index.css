@@ -405,16 +405,293 @@ html, body {
 }
 
 /* ==================== 游戏经历卡片 ==================== */
+.gaming-page {
+  scrollbar-gutter: stable;
+}
+
+.gaming-page-shell {
+  padding: 16px 18px 30px;
+}
+
+.gaming-category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.gaming-category-section {
+  position: relative;
+}
+
+.gaming-category-header {
+  min-height: 44px;
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(90deg, var(--cat-color, #ff5ba0), rgba(255,255,255,0.78));
+  border: 3px solid #1a1a1a;
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 #1a1a1a;
+}
+
+.gaming-category-mark {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #1a1a1a;
+  border-radius: 50%;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.gaming-category-title {
+  font-family: 'Barlow', 'Noto Sans SC', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  font-style: italic;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.gaming-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 150px;
+  gap: 10px;
+}
+
+.gaming-list-row {
+  position: relative;
+  height: 150px;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(116px, 36%) minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
+  padding: 7px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 3px solid #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 var(--cat-color, #ff5ba0);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.gaming-list-row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 2px 2px, rgba(0,0,0,0.045) 1.3px, transparent 1.3px),
+    linear-gradient(90deg, color-mix(in srgb, var(--cat-color, #ff5ba0) 10%, transparent), transparent 45%);
+  background-size: 10px 10px, 100% 100%;
+  opacity: 0.72;
+}
+
+.gaming-list-row:hover,
+.gaming-list-row:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 5px 9px 0 var(--cat-color, #ff5ba0);
+}
+
+.gaming-list-row:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.gaming-cover-slot,
+.gaming-row-main {
+  position: relative;
+  z-index: 1;
+}
+
+.gaming-cover-slot {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--cat-color, #ff5ba0) 34%, #ffffff), rgba(255,255,255,0.86)),
+    repeating-linear-gradient(-35deg, rgba(26,26,26,0.08) 0 8px, transparent 8px 16px);
+  border: 3px solid #1a1a1a;
+  border-radius: 8px;
+  box-shadow: inset 2px 2px 0 rgba(255,255,255,0.55), inset -2px -2px 0 rgba(0,0,0,0.12);
+}
+
+.gaming-cover-slot::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 2px dashed rgba(26,26,26,0.26);
+  border-radius: 5px;
+}
+
+.gaming-cover-slot img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  position: relative;
+  z-index: 1;
+}
+
+.gaming-cover-slot:has(img)::after {
+  display: none;
+}
+
+.gaming-row-main {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  row-gap: 3px;
+  overflow: hidden;
+  padding: 8px 34px 24px 0;
+}
+
+.gaming-row-title-line {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.gaming-row-title {
+  margin: 0;
+  font-family: 'Noto Sans SC', 'Barlow', sans-serif;
+  font-size: clamp(23px, 2.05vw, 31px);
+  font-weight: 900;
+  line-height: 1.08;
+  padding-bottom: 4px;
+  color: #111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gaming-row-award {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 27px;
+  height: 32px;
+  background: #4fc3f7;
+  border: 2px solid #1a1a1a;
+  box-shadow: 2px 2px 0 #1a1a1a;
+  clip-path: polygon(50% 0, 61% 13%, 78% 6%, 82% 24%, 99% 31%, 88% 46%, 96% 63%, 76% 64%, 72% 100%, 50% 78%, 28% 100%, 24% 64%, 4% 63%, 12% 46%, 1% 31%, 18% 24%, 22% 6%, 39% 13%);
+}
+
+.gaming-row-award::after {
+  content: '';
+  position: absolute;
+  inset: 7px 6px 9px;
+  background: #ffeb3b;
+  border: 2px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.gaming-row-bottom-copy {
+  position: absolute;
+  left: 0;
+  right: 34px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.gaming-row-hours {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  align-self: stretch;
+  min-height: clamp(18px, 1.55vw, 25px);
+  font-family: 'Barlow', 'Noto Sans SC', sans-serif;
+  font-size: clamp(18px, 1.55vw, 25px);
+  font-weight: 900;
+  line-height: 1;
+  color: #111;
+}
+
+.gaming-row-inline-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gaming-row-inline-line {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  font-family: 'Noto Sans SC', 'VT323', sans-serif;
+  font-size: clamp(18px, 1.55vw, 25px);
+  font-weight: 900;
+  line-height: 1;
+  color: #1a1a1a;
+}
+
+.gaming-row-inline-line span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gaming-list-row-overwatch .gaming-row-inline-line {
+  font-size: 23px;
+}
+
+.gaming-list-row-overwatch .gaming-row-inline-line span {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.12;
+}
+
+.gaming-row-progress {
+  position: absolute;
+  left: 0;
+  right: 34px;
+  bottom: 9px;
+  width: 100%;
+  height: 9px;
+  overflow: hidden;
+  background: #ececec;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(26,26,26,0.08), 1px 1px 0 rgba(26,26,26,0.18);
+}
+
+.gaming-row-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--cat-color, #ff5ba0), #ff9f00);
+  border-radius: inherit;
+}
+
 .gaming-wall {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  align-items: start;
 }
 
 /* 票根 */
 .gaming-ticket {
   width: 100%;
-  aspect-ratio: 2 / 3.2;
+  aspect-ratio: 2 / 3;
   position: relative;
   border: 3px solid #1a1a1a;
   border-radius: 4px;
@@ -422,12 +699,19 @@ html, body {
   background: #fff;
   box-shadow: 3px 3px 0 var(--cat-color, #ff5ba0);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
-  cursor: default;
+  cursor: pointer;
+  min-height: 212px;
 }
 
-.gaming-ticket:hover {
+.gaming-ticket:hover,
+.gaming-ticket:focus-visible {
   transform: translateY(-6px);
   box-shadow: 4px 10px 0 var(--cat-color, #ff5ba0);
+}
+
+.gaming-ticket:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
 }
 
 /* 正面 */
@@ -443,7 +727,8 @@ html, body {
   background-size: 10px 10px;
 }
 
-.gaming-ticket:hover .gaming-ticket-front {
+.gaming-ticket:hover .gaming-ticket-front,
+.gaming-ticket:focus-visible .gaming-ticket-front {
   opacity: 0;
 }
 
@@ -491,29 +776,46 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6px 8px;
+  padding: 7px 9px 6px;
   overflow: hidden;
 }
 
-/* 头部 emoji + 分类 */
+/* 头部图标 + 编号 */
 .gaming-ticket-header {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 32px 1fr;
   align-items: center;
-  gap: 1px;
+  gap: 6px;
   flex-shrink: 0;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
-.gaming-ticket-emoji {
-  font-size: 26px;
+.gaming-ticket-icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1a1a;
+  background: #fff;
+  border: 2px solid #1a1a1a;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0 var(--cat-color, #ff5ba0);
+}
+
+.gaming-ticket-code {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: #1a1a1a;
   line-height: 1;
-  margin-top: 6px;
+  text-align: right;
+  opacity: 0.78;
 }
 
 .gaming-ticket-cat {
   font-family: 'VT323', monospace;
-  font-size: 9px;
+  font-size: 10px;
   color: #1a1a1a;
   opacity: 0.5;
   letter-spacing: 0.5px;
@@ -522,11 +824,11 @@ html, body {
 /* 游戏名 — 占满剩余空间，无画框 */
 .gaming-ticket-name {
   font-family: 'Barlow', 'Noto Sans SC', sans-serif;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 900;
   color: #1a1a1a;
   text-align: center;
-  line-height: 1.15;
+  line-height: 1.05;
   word-break: keep-all;
   flex: 1;
   display: flex;
@@ -534,6 +836,41 @@ html, body {
   justify-content: center;
   width: 100%;
   text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+  min-height: 52px;
+  overflow-wrap: anywhere;
+}
+
+.gaming-ticket-front-meta {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  margin: 3px 0 4px;
+}
+
+.gaming-ticket-front-meta span {
+  width: 100%;
+  min-height: 20px;
+  padding: 3px 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--cat-color, #ff5ba0) 24%, white);
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  font-family: 'Noto Sans SC', 'VT323', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.25;
+  text-align: center;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.18);
+}
+
+.gaming-ticket-front-meta span:nth-child(2) {
+  transform: rotate(-1deg);
 }
 
 /* 底部条码 */
@@ -542,7 +879,7 @@ html, body {
   align-items: flex-end;
   justify-content: center;
   gap: 1px;
-  height: 18px;
+  height: 14px;
   flex-shrink: 0;
   margin-top: 4px;
   width: 100%;
@@ -561,14 +898,15 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 12px 10px 24px;
   background: #1a1a1a;
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
 }
 
-.gaming-ticket:hover .gaming-ticket-back {
+.gaming-ticket:hover .gaming-ticket-back,
+.gaming-ticket:focus-visible .gaming-ticket-back {
   opacity: 1;
 }
 
@@ -605,19 +943,19 @@ html, body {
 /* 背面样式 */
 .gaming-ticket-back-name {
   font-family: 'Barlow', 'Noto Sans SC', sans-serif;
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 900;
   color: #fff;
   text-align: center;
   line-height: 1.2;
-  margin-bottom: 8px;
+  margin-bottom: 9px;
   word-break: keep-all;
 }
 
 .gaming-ticket-back-meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 7px;
   width: 100%;
 }
 
@@ -626,14 +964,28 @@ html, body {
   align-items: flex-start;
   gap: 5px;
   font-family: 'Noto Sans SC', 'VT323', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   color: #fff;
-  line-height: 1.3;
-  word-break: break-all;
+  line-height: 1.35;
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 .gaming-ticket-back-line span:first-child {
   flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cat-color, #ff5ba0);
+  border: 1px solid #fff;
+  border-radius: 3px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1;
 }
 
 .gaming-ticket-back-empty {
@@ -643,6 +995,10 @@ html, body {
   gap: 6px;
   font-family: 'VT323', monospace;
   font-size: 14px;
+  color: #ffeb3b;
+}
+
+.gaming-ticket-back-empty svg {
   color: #ffeb3b;
 }
 
@@ -1194,6 +1550,66 @@ html, body {
     color: #1a1a1a;
     text-shadow: none;
     transform: scale(1);
+  }
+}
+
+@media (max-width: 900px) {
+  .gaming-page-shell {
+    padding: 12px 12px 24px;
+  }
+
+  .gaming-list {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 140px;
+  }
+
+  .gaming-list-row {
+    grid-template-columns: minmax(108px, 36%) minmax(0, 1fr);
+    gap: 12px;
+    height: 140px;
+    min-height: 0;
+    padding: 8px;
+  }
+
+  .gaming-cover-slot {
+    min-height: 0;
+  }
+
+  .gaming-row-main {
+    row-gap: 5px;
+    padding: 8px 34px 8px 0;
+  }
+
+  .gaming-row-title {
+    font-size: 24px;
+  }
+
+  .gaming-row-hours {
+    min-height: 19px;
+    font-size: 19px;
+  }
+
+  .gaming-row-inline-line {
+    font-size: 19px;
+  }
+
+  .gaming-row-award {
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 33px;
+  }
+
+  .gaming-row-award::after {
+    inset: 7px 6px 9px;
+  }
+
+  .gaming-row-progress {
+    height: 11px;
+  }
+
+  .gaming-row-detail {
+    padding: 14px 16px;
   }
 }
 

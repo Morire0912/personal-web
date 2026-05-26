@@ -25,13 +25,18 @@ const VideoPlayer: React.FC<{ videoUrl: string; coverImage?: string }> = ({ vide
     );
 
     observer.observe(video);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      video.pause();
+      video.load();
+    };
   }, []);
 
   return (
     <video
       ref={videoRef}
       controls
+      preload="metadata"
       style={{ width: '100%', height: '100%', objectFit: 'contain' }}
       poster={coverImage || undefined}
     >
