@@ -1,181 +1,207 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
 interface BootScreenProps {
   onComplete: () => void;
+  timing?: BootTiming;
 }
 
-export const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
-  const [progress, setProgress] = useState(0);
-  const [phase, setPhase] = useState<'boot' | 'loading' | 'done'>('boot');
-  const [showCursor, setShowCursor] = useState(true);
+export interface BootTiming {
+  enterMs: number;
+  lineStaggerMs: number;
+  progressMs: number;
+  holdMs: number;
+  windowExitMs: number;
+  screenFadeMs: number;
+}
+
+export const DEFAULT_BOOT_TIMING: BootTiming = {
+  enterMs: 620,
+  lineStaggerMs: 120,
+  progressMs: 820,
+  holdMs: 200,
+  windowExitMs: 460,
+  screenFadeMs: 460,
+};
+
+const terminalLines = [
+  'Username: Visitor_9527',
+  'Password: ************',
+  'Mounting creative cache...',
+  'Loading MY BRAIN desktop...',
+];
+
+const seconds = (ms: number) => ms / 1000;
+
+export const BootScreen: React.FC<BootScreenProps> = ({ onComplete, timing = DEFAULT_BOOT_TIMING }) => {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const completedRef = useRef(false);
 
   useEffect(() => {
-    // 闪烁光标
-    const cursorInterval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 500);
+    const root = rootRef.current;
+    if (!root) return;
 
-    // 启动进度
-    const bootTimer = setTimeout(() => {
-      setPhase('loading');
-    }, 800);
-
-    // 进度条动画
-    const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          setTimeout(() => {
-            setPhase('done');
-            setTimeout(onComplete, 800);
-          }, 300);
-          return 100;
-        }
-        return prev + Math.random() * 15 + 5;
-      });
-    }, 200);
-
-    return () => {
-      clearInterval(cursorInterval);
-      clearTimeout(bootTimer);
-      clearInterval(progressInterval);
+    const complete = () => {
+      if (completedRef.current) return;
+      completedRef.current = true;
+      onComplete();
     };
-  }, [onComplete]);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      const timer = window.setTimeout(complete, 900);
+      return () => window.clearTimeout(timer);
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.set('.boot-computer', { transformPerspective: 900, transformOrigin: '50% 60%' });
+      gsap.set('.boot-terminal-progress-fill', { scaleX: 0, transformOrigin: '0% 50%' });
+      const exitDuration = seconds(timing.windowExitMs);
+
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.out' },
+        onComplete: () => gsap.delayedCall(0.25, complete),
+      });
+
+      tl
+        .from('.boot-computer', {
+          opacity: 0,
+          y: 42,
+          scale: 0.94,
+          rotateX: 5,
+          duration: seconds(timing.enterMs),
+        })
+        .from(
+          '.boot-terminal-mark-piece',
+          {
+            opacity: 0,
+            y: 18,
+            scale: 0.92,
+            stagger: 0.08,
+            duration: seconds(timing.enterMs) * 0.68,
+          },
+          '-=0.18'
+        )
+        .from(
+          '.boot-terminal-title',
+          {
+            opacity: 0,
+            y: 14,
+            skewX: -5,
+            duration: seconds(timing.enterMs) * 0.68,
+          },
+          '-=0.18'
+        )
+        .from('.boot-terminal-subtitle', { opacity: 0, y: 8, duration: seconds(timing.enterMs) * 0.45 }, '-=0.1')
+        .from(
+          '.boot-terminal-line',
+          {
+            opacity: 0,
+            x: -12,
+            stagger: seconds(timing.lineStaggerMs),
+            duration: 0.22,
+            ease: 'steps(1)',
+          },
+          '+=0.08'
+        )
+        .to('.boot-terminal-progress-fill', { scaleX: 1, duration: seconds(timing.progressMs), ease: 'steps(18)' }, '-=0.05')
+        .from('.boot-ready-line', { opacity: 0, x: -10, duration: 0.22, ease: 'steps(1)' })
+        .addLabel('exit', `+=${seconds(timing.holdMs)}`)
+        .to('.boot-screen', { autoAlpha: 0, duration: exitDuration, ease: 'power2.inOut' }, 'exit');
+
+      gsap.to('.boot-scan-band', {
+        yPercent: 260,
+        opacity: 0.55,
+        duration: 1.45,
+        repeat: -1,
+        ease: 'none',
+      });
+
+      gsap.to('.boot-power-dot', {
+        opacity: 0.45,
+        scale: 0.86,
+        duration: 0.55,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+    }, root);
+
+    return () => ctx.revert();
+  }, [onComplete, timing]);
 
   return (
-    <AnimatePresence>
-      {phase !== 'done' && (
-        <motion.div
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center"
-          style={{ backgroundColor: '#1a1b26' }}
-        >
-          {/* 像素风格背景 */}
-          <div 
-            className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,91,160,0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,91,160,0.3) 1px, transparent 1px)
-              `,
-              backgroundSize: '4px 4px',
-            }}
-          />
+      <div ref={rootRef} className="boot-screen" aria-label="MY BRAIN startup animation">
+      <div className="boot-room-noise" aria-hidden="true" />
+      <div className="boot-backlight" aria-hidden="true" />
 
-          {/* 主内容 */}
-          <div className="relative z-10 flex flex-col items-center">
-            {/* 电脑图标 */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="mb-8"
-            >
-              <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
-                <rect x="8" y="8" width="40" height="32" fill="#ff5ba0" stroke="#fff" strokeWidth="3" rx="2"/>
-                <rect x="12" y="12" width="32" height="24" fill="#1a1b26" stroke="#fff" strokeWidth="1"/>
-                <rect x="20" y="40" width="16" height="6" fill="#ffeb3b" stroke="#fff" strokeWidth="2" rx="1"/>
-                <rect x="12" y="46" width="32" height="4" fill="#ff5ba0" stroke="#fff" strokeWidth="2" rx="1"/>
-                {/* 屏幕上的文字 */}
-                <text x="16" y="28" fill="#ffeb3b" fontSize="10" fontFamily="VT323, monospace">MY</text>
-                <text x="16" y="32" fill="#ffeb3b" fontSize="8" fontFamily="VT323, monospace">BRAIN</text>
-              </svg>
-            </motion.div>
-
-            {/* 标题 */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-4xl font-bold mb-2 tracking-widest"
-              style={{ 
-                fontFamily: 'VT323, monospace',
-                color: '#ff5ba0',
-                textShadow: '3px 3px 0 #ffeb3b, -1px -1px 0 #fff',
-              }}
-            >
-              MY BRAIN
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="text-lg mb-12 opacity-60"
-              style={{ fontFamily: 'VT323, monospace' }}
-            >
-              Personal Portfolio System
-            </motion.p>
-
-            {/* 启动阶段文字 */}
-            {phase === 'boot' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-base mb-4"
-                style={{ fontFamily: 'VT323, monospace', color: '#ffeb3b' }}
-              >
-                Booting up...{showCursor ? '_' : ' '}
-              </motion.div>
-            )}
-
-            {/* 进度条 */}
-            {phase === 'loading' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="w-80"
-              >
-                <div className="flex justify-between mb-2 text-sm" style={{ fontFamily: 'VT323, monospace' }}>
-                  <span style={{ color: '#ffeb3b' }}>Loading portfolio data...</span>
-                  <span style={{ color: '#ff5ba0' }}>{Math.min(progress, 100).toFixed(0)}%</span>
-                </div>
-                <div 
-                  className="w-full h-6 relative"
-                  style={{ 
-                    border: '3px solid #fff',
-                    background: '#1a1b26',
-                  }}
-                >
-                  <motion.div
-                    className="h-full"
-                    style={{ 
-                      background: 'linear-gradient(90deg, #ff5ba0 0%, #ffeb3b 100%)',
-                      width: `${Math.min(progress, 100)}%`,
-                    }}
-                    transition={{ duration: 0.1 }}
-                  />
-                  {/* 像素风格网格覆盖 */}
-                  <div 
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      backgroundImage: 'linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.1) 50%)',
-                      backgroundSize: '4px 100%',
-                    }}
-                  />
-                </div>
-                <div className="mt-3 text-xs opacity-50" style={{ fontFamily: 'VT323, monospace' }}>
-                  {progress < 30 && '> Initializing pixel renderer...'}
-                  {progress >= 30 && progress < 60 && '> Loading pop art assets...'}
-                  {progress >= 60 && progress < 90 && '> Mounting video players...'}
-                  {progress >= 90 && '> Ready to launch!'}
-                </div>
-              </motion.div>
-            )}
+      <div className="boot-computer">
+        <div className="boot-launch-window">
+          <div className="boot-launch-titlebar">
+            <span className="boot-launch-brand">MY BRAIN</span>
+            <span className="boot-launch-caption">Brain.exe loading...</span>
+            <span className="boot-launch-controls" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
           </div>
 
-          {/* 底部版本信息 */}
-          <div 
-            className="absolute bottom-8 text-xs opacity-40"
-            style={{ fontFamily: 'VT323, monospace' }}
-          >
-            MY BRAIN Portfolio v1.0 | Build 2025.05.01
+          <div className="boot-case">
+            <div className="boot-screen-bezel">
+              <div className="boot-terminal-screen">
+                <div className="boot-crt-glow" aria-hidden="true" />
+                <div className="boot-terminal-glass" aria-hidden="true" />
+                <div className="boot-scan-band" aria-hidden="true" />
+
+                <div className="boot-terminal-content">
+                  <div className="boot-terminal-mark" aria-hidden="true">
+                    <span className="boot-terminal-mark-piece boot-terminal-mark-top" />
+                    <span className="boot-terminal-mark-piece boot-terminal-mark-left" />
+                    <span className="boot-terminal-mark-piece boot-terminal-mark-right" />
+                  </div>
+
+                  <h1 className="boot-terminal-title">MY BRAIN</h1>
+                  <p className="boot-terminal-subtitle">PERSONAL PORTFOLIO SYSTEM</p>
+
+                  <div className="boot-terminal-lines">
+                    {terminalLines.map((line) => (
+                      <p key={line} className="boot-terminal-line">
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+
+                  <div className="boot-terminal-progress" aria-hidden="true">
+                    <span className="boot-terminal-progress-fill" />
+                  </div>
+
+                  <p className="boot-ready-line">Ready.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="boot-case-lower" aria-hidden="true">
+              <div className="boot-speaker">
+                {Array.from({ length: 8 }).map((_, index) => (
+                  <span key={index} />
+                ))}
+              </div>
+              <div className="boot-drive-slot">
+                <span />
+              </div>
+              <div className="boot-power-module">
+                <span className="boot-power-dot" />
+              </div>
+            </div>
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+
+          <div className="boot-launch-status" aria-hidden="true">
+            <span>Brain.exe running...</span>
+            <span>WAITING FOR INPUT...</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };

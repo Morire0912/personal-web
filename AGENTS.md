@@ -56,6 +56,29 @@ git push origin main  # Vercel 自动部署
 - `vercel.json` 已配置 SPA 路由（前端路由刷新不会 404）
 - 部分板块可能处于隐藏状态（如简历板块曾临时隐藏），如需恢复检查 `src/components/Explorer.tsx` 或对应页面组件
 
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs are tracked locally as markdown files under `.scratch/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Triage uses Chinese status labels for local markdown issues. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context repo: use root `CONTEXT.md` and `docs/adr/` for domain language and architecture decisions. See `docs/agents/domain.md`.
+
+### Required collaboration workflow
+
+Future work on this project must combine these skill families:
+
+- Use the Matt Pocock engineering skills configuration in `docs/agents/` for planning, PRDs, issue breakdowns, triage, diagnosis, TDD, and architecture review. Re-run `setup-matt-pocock-skills` only when switching issue tracker, triage vocabulary, or domain-doc layout.
+- Use `ui-ux-pro-max` for UI/UX design, redesign, review, and visual-system decisions. For substantial UI changes, start with its design-system workflow and keep recommendations aligned with this portfolio's pixel XP + pop-comic identity.
+- Use the GSAP skills for animation work. In React components, follow `gsap-react`; for tweens and easing use `gsap-core`; for multi-step sequencing use `gsap-timeline`; for smoothness and jank reduction use `gsap-performance`.
+- For animated UI changes, treat design and motion as one pass: decide the visual intent with `ui-ux-pro-max`, choreograph it with GSAP timelines, then verify locally before considering a GitHub push.
+
 ## 项目结构速查
 
 ```
