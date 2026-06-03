@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Explorer } from './components/Explorer';
 import { MosaicBackground } from './components/MosaicBackground';
 import { BootScreen } from './components/BootScreen';
@@ -11,6 +11,7 @@ const VIEWPORT_HEIGHT_RATIO = 0.84;
 export default function App() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [bootComplete, setBootComplete] = useState(false);
+  const [desktopRevealed, setDesktopRevealed] = useState(false);
   const [desktopScale, setDesktopScale] = useState(1);
 
   useEffect(() => {
@@ -29,9 +30,19 @@ export default function App() {
     setIsFullscreen(!isFullscreen);
   };
 
+  const handleBootExitStart = useCallback(() => {
+    setDesktopRevealed(true);
+  }, []);
+
+  const handleBootComplete = useCallback(() => {
+    setBootComplete(true);
+  }, []);
+
   return (
     <>
-      {!bootComplete && <BootScreen onComplete={() => setBootComplete(true)} />}
+      {!bootComplete && (
+        <BootScreen onExitStart={handleBootExitStart} onComplete={handleBootComplete} />
+      )}
       
       <div
         className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
@@ -40,7 +51,7 @@ export default function App() {
         <MosaicBackground />
         
         <main
-          className="relative z-10 flex items-center justify-center"
+          className={`portfolio-desktop-stage ${desktopRevealed || bootComplete ? 'portfolio-desktop-stage-visible' : ''} relative z-10 flex items-center justify-center`}
           style={{
             width: `${DESIGN_WIDTH * desktopScale}px`,
             height: `${DESIGN_HEIGHT * desktopScale}px`,

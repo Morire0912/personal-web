@@ -8,6 +8,7 @@ interface AdBreakdownPageProps {
 
 const AdCard: React.FC<{ ad: AdBreakdown; index: number }> = ({ ad, index }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const caseMediaHeight = '620px';
 
   useEffect(() => {
     const video = videoRef.current;
@@ -54,9 +55,9 @@ const AdCard: React.FC<{ ad: AdBreakdown; index: number }> = ({ ad, index }) => 
       </div>
 
       {/* 视频(左) + 概况/拆解(右) */}
-      <div className="flex gap-3 justify-center" style={{ minHeight: '680px' }}>
+      <div className="flex gap-3 justify-center" style={{ minHeight: caseMediaHeight }}>
         {/* 左边: 视频播放器 */}
-        <div className="pop-video-container flex-shrink-0" style={{ height: '680px', aspectRatio: '9/16' }}>
+        <div className="pop-video-container flex-shrink-0" style={{ height: caseMediaHeight, aspectRatio: '9/16' }}>
           {ad.videoUrl ? (
             <video
               ref={videoRef}
@@ -79,7 +80,7 @@ const AdCard: React.FC<{ ad: AdBreakdown; index: number }> = ({ ad, index }) => 
         </div>
 
         {/* 右边: 素材概况 + 素材拆解 */}
-        <div className="flex flex-col gap-3 flex-1 min-w-0 pr-1" style={{ height: '680px' }}>
+        <div className="flex flex-col gap-3 flex-1 min-w-0 pr-1" style={{ height: caseMediaHeight }}>
           <div className="pop-card">
             <div className="pop-card-title" style={{ fontFamily: "'ZCOOL KuaiLe', 'Microsoft YaHei', sans-serif", fontSize: '22px', fontWeight: 300 }}>📊 素材概况</div>
             <div className="pop-metrics-grid">

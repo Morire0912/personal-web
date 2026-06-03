@@ -5,8 +5,8 @@ import { gsap } from 'gsap';
 import { AdBreakdownPage } from './AdBreakdownPage';
 import { LilithPage } from './LilithPage';
 import { YouzhiquPage } from './YouzhiquPage';
-import { ResumePage } from './ResumePage';
 import { GamingPage } from './GamingPage';
+import { AiVideoPage } from './AiVideoPage';
 import { CreditsPage } from './CreditsPage';
 import { AvatarPanel } from './AvatarPanel';
 
@@ -119,7 +119,7 @@ const PopDecorations = () => null;
 
 // ==================== 主组件 ====================
 
-type ContentView = 'root' | 'drive-D' | 'drive-E' | 'drive-F' | 'lilith' | 'youzhiqu' | 'credits';
+type ContentView = 'root' | 'drive-D' | 'drive-F' | 'lilith' | 'youzhiqu' | 'ai-video' | 'credits';
 
 // 侧边栏项目配置
 const SIDEBAR_ITEMS: { view: ContentView; icon: string; label: string }[] = [
@@ -130,7 +130,7 @@ const SIDEBAR_ITEMS: { view: ContentView; icon: string; label: string }[] = [
 ];
 
 // 波普漫画风侧边栏
-const Sidebar: React.FC<{ currentView: ContentView; onNavigate: (view: ContentView) => void; onAiVideoClick?: () => void; showLockWarning?: boolean; onCreditsClick?: () => void }> = ({ currentView, onNavigate, onAiVideoClick, showLockWarning, onCreditsClick }) => {
+const Sidebar: React.FC<{ currentView: ContentView; onNavigate: (view: ContentView) => void; onCreditsClick?: () => void }> = ({ currentView, onNavigate, onCreditsClick }) => {
   return (
     <div className="pop-sidebar">
       {SIDEBAR_ITEMS.map((item) => {
@@ -150,23 +150,15 @@ const Sidebar: React.FC<{ currentView: ContentView; onNavigate: (view: ContentVi
         );
       })}
       <button
-        onClick={onAiVideoClick}
+        onClick={() => onNavigate('ai-video')}
         className="pop-sidebar-btn"
         aria-label="AI影视作品"
+        aria-current={currentView === 'ai-video' ? 'page' : undefined}
+        data-active={currentView === 'ai-video'}
         style={{ position: 'relative' }}
       >
         <img src="/images/ai-video-logo.png" alt="" style={{ transform: 'scale(2)' }} />
         <span className="pop-sidebar-tooltip">AI影视作品</span>
-        {showLockWarning && (
-          <div className="pop-sidebar-lock">
-            <div className="pop-sidebar-lock-circle">
-              <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
-                <path d="M14 14L34 34" stroke="#fff" strokeWidth="5" strokeLinecap="round"/>
-                <path d="M34 14L14 34" stroke="#fff" strokeWidth="5" strokeLinecap="round"/>
-              </svg>
-            </div>
-          </div>
-        )}
       </button>
       {/* 致谢按钮 */}
       <button
@@ -191,7 +183,6 @@ interface ExplorerProps {
 export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullscreen }) => {
   const [view, setView] = useState<ContentView>('root');
   const [isShaking, setIsShaking] = useState(false);
-  const [showLockWarning, setShowLockWarning] = useState(false);
   const rootViewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -238,8 +229,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
     switch (view) {
       case 'lilith':
       case 'youzhiqu':
+      case 'ai-video':
       case 'drive-D':
-      case 'drive-E':
       case 'drive-F':
       case 'credits':
         setView('root');
@@ -254,6 +245,8 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
       setView('lilith');
     } else if (drive.id === 'youzhiqu') {
       setView('youzhiqu');
+    } else if (drive.id === 'ai-video') {
+      setView('ai-video');
     } else {
       setView(`drive-${drive.id}` as ContentView);
     }
@@ -263,10 +256,10 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
     switch (view) {
       case 'root': return '话不说出去，事就办不成';
       case 'drive-D': return '广告素材全部来自于广大大，素材概况截止广告发布时间至4月12日';
-      case 'drive-E': return '没错就是我，捞捞 (つ´ω`)つ';
       case 'drive-F': return '打枪，嘿嘿，打枪好玩！( º﹃º ｣ ∠)';
       case 'lilith': return '远光84官方账号2025年7月-9月及10月初视频内容大部分均有不同程度参与，以下为参与且高播放视频';
-      case 'youzhiqu': return '龙骑士学园项目数据截取自三月中预注册启动至4月13日（未上线）数据';
+      case 'youzhiqu': return '龙骑士学园素材为消耗前20素材中个人撰写视频，我的花园世界无消耗数据仅作展示';
+      case 'ai-video': return '个人B站主页发布AI二创，页面下会更新一些未完成短片的部分内容及提示词';
       case 'credits': return '感谢所有让这一切成为可能的技术与工具！';
     }
   };
@@ -311,12 +304,6 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
         <Sidebar
           currentView={view}
           onNavigate={setView}
-          onAiVideoClick={() => {
-            if (showLockWarning) return;
-            setShowLockWarning(true);
-            setTimeout(() => setShowLockWarning(false), 1200);
-          }}
-          showLockWarning={showLockWarning}
           onCreditsClick={() => setView('credits')}
         />
 
@@ -413,15 +400,7 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                       {DRIVES.map((drive) => (
                         <div
                           key={drive.id}
-                          onClick={() => {
-                            if (drive.id === 'ai-video') {
-                              if (showLockWarning) return;
-                              setShowLockWarning(true);
-                              setTimeout(() => setShowLockWarning(false), 1200);
-                            } else {
-                              openDrive(drive);
-                            }
-                          }}
+                          onClick={() => openDrive(drive)}
                           className="pop-drive"
                           style={drive.id === 'ai-video' ? { position: 'relative' } : undefined}
                         >
@@ -443,20 +422,6 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                             )}
                           </div>
                           <span className="pop-drive-label">{drive.label}({drive.driveLetter})</span>
-                          {drive.id === 'ai-video' && showLockWarning && (
-                            <>
-                              <div className="pop-lock-overlay" />
-                              <div className="pop-lock-warning">
-                                <div className="pop-lock-circle">
-                                  <svg width="72" height="72" viewBox="0 0 48 48" fill="none">
-                                    <path d="M14 14L34 34" stroke="#fff" strokeWidth="5" strokeLinecap="round"/>
-                                    <path d="M34 14L14 34" stroke="#fff" strokeWidth="5" strokeLinecap="round"/>
-                                  </svg>
-                                </div>
-                                <span className="pop-lock-text">筹备中</span>
-                              </div>
-                            </>
-                          )}
                         </div>
                       ))}
                     </div>
@@ -492,21 +457,6 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   style={{ position: 'relative', zIndex: 1 }}
                 >
                   <AdBreakdownPage onBack={goBack} />
-                </motion.div>
-              )}
-
-              {/* E盘 - 个人简历 */}
-              {view === 'drive-E' && (
-                <motion.div
-                  key="drive-E"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, transition: { duration: 0 } }}
-                  transition={{ duration: 0.12 }}
-                  className="h-full"
-                  style={{ position: 'relative', zIndex: 1 }}
-                >
-                  <ResumePage onBack={goBack} />
                 </motion.div>
               )}
 
@@ -552,6 +502,21 @@ export const Explorer: React.FC<ExplorerProps> = ({ isFullscreen, onToggleFullsc
                   style={{ position: 'relative', zIndex: 1 }}
                 >
                   <YouzhiquPage onBack={goBack} />
+                </motion.div>
+              )}
+
+              {/* AI影视作品 */}
+              {view === 'ai-video' && (
+                <motion.div
+                  key="ai-video"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
+                  transition={{ duration: 0.12 }}
+                  className="h-full"
+                  style={{ position: 'relative', zIndex: 1 }}
+                >
+                  <AiVideoPage onBack={goBack} />
                 </motion.div>
               )}
 

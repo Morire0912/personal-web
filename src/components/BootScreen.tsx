@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 
 interface BootScreenProps {
   onComplete: () => void;
+  onExitStart?: () => void;
   timing?: BootTiming;
 }
 
@@ -12,7 +13,6 @@ export interface BootTiming {
   progressMs: number;
   holdMs: number;
   windowExitMs: number;
-  screenFadeMs: number;
 }
 
 export const DEFAULT_BOOT_TIMING: BootTiming = {
@@ -20,8 +20,7 @@ export const DEFAULT_BOOT_TIMING: BootTiming = {
   lineStaggerMs: 120,
   progressMs: 820,
   holdMs: 200,
-  windowExitMs: 460,
-  screenFadeMs: 460,
+  windowExitMs: 720,
 };
 
 const terminalLines = [
@@ -33,41 +32,56 @@ const terminalLines = [
 
 const seconds = (ms: number) => ms / 1000;
 
-export const BootScreen: React.FC<BootScreenProps> = ({ onComplete, timing = DEFAULT_BOOT_TIMING }) => {
+export const BootScreen: React.FC<BootScreenProps> = ({ onComplete, onExitStart, timing = DEFAULT_BOOT_TIMING }) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const completedRef = useRef(false);
+  const exitStartedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  const onExitStartRef = useRef(onExitStart);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+    onExitStartRef.current = onExitStart;
+  }, [onComplete, onExitStart]);
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
+    const startExit = () => {
+      if (exitStartedRef.current) return;
+      exitStartedRef.current = true;
+      onExitStartRef.current?.();
+    };
+
     const complete = () => {
       if (completedRef.current) return;
       completedRef.current = true;
-      onComplete();
+      onCompleteRef.current();
     };
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
-      const timer = window.setTimeout(complete, 900);
+      startExit();
+      const timer = window.setTimeout(complete, 120);
       return () => window.clearTimeout(timer);
     }
 
     const ctx = gsap.context(() => {
       gsap.set('.boot-computer', { transformPerspective: 900, transformOrigin: '50% 60%' });
+      gsap.set('.boot-terminal-screen', { transformOrigin: '50% 50%' });
       gsap.set('.boot-terminal-progress-fill', { scaleX: 0, transformOrigin: '0% 50%' });
-      const exitDuration = seconds(timing.windowExitMs);
 
       const tl = gsap.timeline({
         defaults: { ease: 'power3.out' },
-        onComplete: () => gsap.delayedCall(0.25, complete),
+        onComplete: () => gsap.delayedCall(0.2, complete),
       });
 
       tl
         .from('.boot-computer', {
           opacity: 0,
           y: 42,
-          scale: 0.94,
+          scale: 0.92,
           rotateX: 5,
           duration: seconds(timing.enterMs),
         })
@@ -107,7 +121,8 @@ export const BootScreen: React.FC<BootScreenProps> = ({ onComplete, timing = DEF
         .to('.boot-terminal-progress-fill', { scaleX: 1, duration: seconds(timing.progressMs), ease: 'steps(18)' }, '-=0.05')
         .from('.boot-ready-line', { opacity: 0, x: -10, duration: 0.22, ease: 'steps(1)' })
         .addLabel('exit', `+=${seconds(timing.holdMs)}`)
-        .to('.boot-screen', { autoAlpha: 0, duration: exitDuration, ease: 'power2.inOut' }, 'exit');
+        .call(startExit, [], 'exit')
+        .to('.boot-screen', { autoAlpha: 0, duration: seconds(timing.windowExitMs), ease: 'sine.inOut' }, 'exit');
 
       gsap.to('.boot-scan-band', {
         yPercent: 260,
@@ -128,10 +143,11 @@ export const BootScreen: React.FC<BootScreenProps> = ({ onComplete, timing = DEF
     }, root);
 
     return () => ctx.revert();
-  }, [onComplete, timing]);
+  }, [timing]);
 
   return (
-      <div ref={rootRef} className="boot-screen" aria-label="MY BRAIN startup animation">
+    <div ref={rootRef} className="boot-screen" aria-label="MY BRAIN startup animation">
+      <img className="boot-xp-backdrop" src="/images/xp-bg.png" alt="" aria-hidden="true" />
       <div className="boot-room-noise" aria-hidden="true" />
       <div className="boot-backlight" aria-hidden="true" />
 

@@ -67,6 +67,7 @@ export interface YouzhiquVideo {
   title: string;
   videoUrl: string; // 腾讯云 COS 链接
   coverImage: string;
+  projectTag?: string; // 卡片右上角项目标签
   metrics: {
     spend: string; // 花费
     ctr: string; // CTR
@@ -100,51 +101,6 @@ export interface GameEntry {
 export interface GameCategory {
   category: string;
   games: GameEntry[];
-}
-
-// ==================== 个人简历 ====================
-
-export interface Resume {
-  name: string;
-  title: string;
-  bio: string;
-  location: string;
-  phone: string;
-  email: string;
-  social: string;
-  education: {
-    school: string;
-    major: string;
-    period: string;
-    courses: string;
-  };
-  skills: string[];
-  software: string[];
-  certificates: string[];
-  interests: string;
-  experience: {
-    company: string;
-    role: string;
-    period: string;
-    bullets: string[];
-  }[];
-  projects: {
-    name: string;
-    role: string;
-    period: string;
-    bullets: string[];
-  }[];
-  campus: {
-    org: string;
-    role: string;
-    period: string;
-    bullets: string[];
-  }[];
-  contact: {
-    email?: string;
-    phone?: string;
-    wechat?: string;
-  };
 }
 
 // ==================== 数据导出 ====================
@@ -192,7 +148,7 @@ export const DRIVES: Drive[] = [
     name: 'AI影视作品',
     icon: 'video',
     iconImage: '/images/ai-video-logo.png',
-    description: '正在筹备中...',
+    description: 'AI影视作品与Bilibili空间',
     driveLetter: 'H:',
   },
 ];
@@ -579,6 +535,159 @@ export const YOUZHIQU_PROJECT: YouzhiquProject = {
         unitPrice: '暂无',
       },
     },
+    {
+      id: 'garden-006',
+      title: '我的花园世界 006',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD006_S_.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
+    {
+      id: 'garden-007',
+      title: '我的花园世界 007',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD007_S_.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
+    {
+      id: 'garden-024c',
+      title: '我的花园世界 024c',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD024c.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
+    {
+      id: 'garden-153',
+      title: '我的花园世界 153',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD153_S_.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
+    {
+      id: 'garden-261',
+      title: '我的花园世界 261',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD261_S_.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
+    {
+      id: 'garden-283',
+      title: '我的花园世界 283',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD283_S_.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
+    {
+      id: 'garden-160',
+      title: '我的花园世界 160',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD%E6%9B%BF%E6%8D%A2160_S_.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
+    {
+      id: 'garden-338',
+      title: '我的花园世界 338',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD338_S_.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
+    {
+      id: 'garden-272-01a',
+      title: '我的花园世界 272 01a',
+      videoUrl: 'https://sucai-1424528078.cos.ap-shanghai.myqcloud.com/%E8%8A%B1%E5%9B%AD_272_S_01a.mp4',
+      coverImage: '',
+      projectTag: '我的花园世界',
+      metrics: {
+        spend: '暂无',
+        ctr: '暂无',
+        cvr: '暂无',
+        cpm: '暂无',
+        roas: '暂无',
+        score: '暂无',
+        registrations: '暂无',
+        unitPrice: '暂无',
+      },
+    },
   ],
 };
 
@@ -658,83 +767,3 @@ export const GAMING_EXPERIENCE: GameCategory[] = [
     ],
   },
 ];
-
-// 个人简历数据
-export const RESUME: Resume = {
-  name: '徐乔宇',
-  title: '市场营销 / 游戏广告素材策划',
-  bio: '上海市应用技术大学市场营销专业本科在读（2026届），深耕游戏买量广告领域，具备从脚本撰写到素材落地的全流程经验，擅长创意策划与数据分析。',
-  location: '上海市 浦东新区',
-  phone: '159-2127-6701',
-  email: 'xqy320155169@163.com',
-  social: 'Morire_',
-  education: {
-    school: '上海市应用技术大学',
-    major: '市场营销（本科）',
-    period: '2021.9 - 至今（2026届）',
-    courses: '市场营销学，消费者行为学，数字网络营销，市场调查与预测，宏观经济学，统计学等',
-  },
-  skills: ['广告创意策划', '脚本撰写', '素材数据分析', 'AIGC 辅助创作', '跨部门协作', '流程标准化'],
-  software: ['Excel', '剪映', 'Photoshop', '即梦', '小云雀', 'Tapnow', 'Lovart', 'Updream'],
-  certificates: ['大学英语四级 CET-4', '计算机二级 WPS Office 高级应用与设计'],
-  interests: 'B站十年深度用户、抖音重度使用。能够快速捕捉网络热点与流行趋势，对动漫、游戏、电影、摄影等内容有浓厚兴趣。',
-  experience: [
-    {
-      company: '莉莉丝游戏',
-      role: '美宣内录实习生',
-      period: '2025.07 - 2025.09',
-      bullets: [
-        '品牌营销素材创作：准确产出发行侧所需的品牌营销素材，确保素材风格统一并契合各地区发行需求，以输出远光84项目为主要内容，以及部分剑与远征：启程与 Zeverland 项目的游戏内录内容素材',
-        '脚本撰写与内容支持：参与多个海外发行相关执行文档编写，包括 Global Relaunch、海外 PatchNotes、远光爆料局、英雄攻略等项目的部分内容撰写，为视觉内容提供前期策划支持',
-        '流程标准化与效率提升：参与搭建录制标准化体系与流程文档，建立确认机制，统一录屏参数与命名规范。优化后日均处理素材量提升至30+条，提升素材复用率，减少重复录制与沟通成本',
-        'AI 工具优化工作流：引入 AI 工具，实现音频内容快速校对。定位因文档更新滞后导致的配音与台词缺失问题，提升素材校验效率，单日独立完成7份台词文档的校对与对齐，降低跨部门沟通成本',
-      ],
-    },
-    {
-      company: '游之趣 UjoyGames',
-      role: '游戏创意素材实习生',
-      period: '2025.12 - 至今',
-      bullets: [
-        '创意脚本撰写与落地：负责多款出海项目（勇者逗逗龙，龙骑士学园，我的花园世界等）的广告创意脚本撰写，独立撰写脚本累计200余条，覆盖搬运、AI、玩法、战斗、福利等多元方向，以及完成从产品卖点提炼→脚本撰写→落地跟进（包括画面表现、配音、录制等）的全流程处理',
-        '脚本与平面迭代：定期与投放组进行素材数据交流汇总，分析素材数据表现，对高消耗的平面以及视频素材进行迭代。在迭代中提炼高消耗素材创意结构（视频素材如钩子画面/文案、玩法展示类型等，平面素材如特定立绘、文案包装等），在下次撰写中进行结构复用，持续提升素材消耗',
-        '跨部门协作交流：对接运营、美术完成脚本翻译、配音音色筛选、福利内容录屏提报等执行细节，熟悉本地化内容与美术需求提报完整流程，确保素材落地质量，提升协作效率',
-        'AIGC 辅助落地：熟练使用 AIGC 工具（如即梦、小云雀等）输出脚本 demo，为美术团队提供视觉参考，有效提升素材后期表现与制作效率。同时还可以快速产出一些AI热点内容，如短剧、萌宠、场景、变身等进行多类型尝试',
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: 'APEX 电竞比赛',
-      role: '主办方',
-      period: '2023.02 - 2023.03',
-      bullets: [
-        '参与策划并执行一场超120人参与的校级大型线上电竞赛事，全流程负责赛事宣发、执行与监督，确保了活动在高参与度下的流畅性与公平性',
-        '赛事宣发与报名管理：通过校内社交账号发布比赛信息，突出赛事奖励机制，成功招募超过40支队伍（120余名选手）报名参赛。设计标准化线上报名流程，利用问卷星高效收集、筛选与管理队伍信息，构建清晰的参赛数据库，为赛事分组与沟通奠定基础',
-        '赛事执行与流程协调：负责40余支队伍的全周期沟通，包括协调赛前训练安排，确保各队伍赛前准备充分。建立清晰的退赛与替补机制，及时更新队伍信息，保障大规模赛事进程顺畅无中断',
-        '赛事监督与公平性保障：设计并实施分组策略，依据队伍实力合理划分赛区，确保比赛竞争公平性。全程监督赛况并引入直播监督机制，确保赛事公平与参赛体验',
-      ],
-    },
-  ],
-  campus: [
-    {
-      org: 'KAB 创业俱乐部',
-      role: '项目部部员',
-      period: '2021.10 - 2022.09',
-      bullets: [
-        '每周参与部门组会探讨近期讨论市场热点，孵化创新项目想法，记录会议内容，为团队提供决策参考',
-      ],
-    },
-    {
-      org: '互联网+创新创业大赛',
-      role: '项目队长',
-      period: '2022.09 - 2023.10',
-      bullets: [
-        '担任"个性化定制手柄"项目队长，获得校级立项。负责分配任务，协调团队合作，同时进行目标市场分析，提出项目创新点，消费者需求收集和营销方案产出',
-      ],
-    },
-  ],
-  contact: {
-    email: 'xqy320155169@163.com',
-    phone: '159-2127-6701',
-  },
-};

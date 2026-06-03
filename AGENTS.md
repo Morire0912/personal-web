@@ -24,7 +24,6 @@
 | 莉莉丝项目 | `LILITH_PROJECT` |
 | 游之趣项目 | `YOUZHIQU_PROJECT` |
 | 游戏经历 | `GAMING_EXPERIENCE` |
-| 个人简历 | `RESUME` |
 | 盘符定义 | `DRIVES` 数组 |
 
 ## 视频/图片资源
@@ -34,11 +33,10 @@
 
 ## 常用修改场景
 
-1. **更新简历内容** → 改 `src/data.ts` 中的 `RESUME`
-2. **新增广告拆解** → 往 `AD_BREAKDOWNS` 数组加对象
-3. **更新游戏时长/段位** → 改 `GAMING_EXPERIENCE`
-4. **新增莉莉丝视频** → 改 `LILITH_PROJECT.videos`
-5. **调整页面样式** → 改对应组件文件
+1. **新增广告拆解** → 往 `AD_BREAKDOWNS` 数组加对象
+2. **更新游戏时长/段位** → 改 `GAMING_EXPERIENCE`
+3. **新增莉莉丝视频** → 改 `LILITH_PROJECT.videos`
+4. **调整页面样式** → 改对应组件文件
 
 ## 部署流程
 
@@ -54,7 +52,7 @@ git push origin main  # Vercel 自动部署
 
 - 已接入 `@google/genai`，如需 AI 功能需在 Vercel 环境变量中设置 `GEMINI_API_KEY`
 - `vercel.json` 已配置 SPA 路由（前端路由刷新不会 404）
-- 部分板块可能处于隐藏状态（如简历板块曾临时隐藏），如需恢复检查 `src/components/Explorer.tsx` 或对应页面组件
+- 简历板块已移除；如需恢复需重新添加数据与页面组件
 
 ## Agent skills
 
@@ -93,7 +91,6 @@ src/
     LilithPage.tsx         # 莉莉丝项目页
     YouzhiquPage.tsx       # 游之趣项目页
     GamingPage.tsx         # 游戏经历页
-    ResumePage.tsx         # 个人简历页
     AvatarPanel.tsx        # 头像面板
     CreditsPage.tsx        # 致谢页
 ```

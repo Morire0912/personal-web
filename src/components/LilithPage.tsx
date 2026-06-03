@@ -53,11 +53,11 @@ const BilibiliPlayer: React.FC<{ video: LilithVideo }> = React.memo(({ video }) 
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="pop-card mb-4"
+      className="pop-card video-channel-card mb-4"
     >
       <div
         ref={ref}
-        className="pop-video-container mb-3"
+        className="pop-video-container portfolio-video-frame portfolio-video-frame-horizontal mb-3"
         style={{ aspectRatio: '16/9', background: '#fff' }}
       >
         {isInView && (
@@ -111,11 +111,11 @@ const YouTubePlayer: React.FC<{ video: LilithVideo }> = React.memo(({ video }) =
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="pop-card mb-4"
+      className="pop-card video-channel-card mb-4"
     >
       <div
         ref={ref}
-        className="pop-video-container mb-3"
+        className="pop-video-container portfolio-video-frame portfolio-video-frame-horizontal mb-3"
         style={{ aspectRatio: '16/9', background: '#fff' }}
       >
         {isInView && (
@@ -159,8 +159,8 @@ export const LilithPage: React.FC<LilithPageProps> = ({ onBack }) => {
       <div className="mx-4 pt-4">
         {/* B站视频 */}
         {bilibiliVideos.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
+          <div className="video-channel-section mb-6">
+            <h3 className="video-channel-heading text-lg font-bold mb-3 flex items-center gap-2">
               <span
                 className="pop-tag"
                 style={{
@@ -188,8 +188,8 @@ export const LilithPage: React.FC<LilithPageProps> = ({ onBack }) => {
 
         {/* YouTube视频 */}
         {youtubeVideos.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
+          <div className="video-channel-section mb-6">
+            <h3 className="video-channel-heading text-lg font-bold mb-3 flex items-center gap-2">
               <span
                 className="pop-tag blue"
                 style={{

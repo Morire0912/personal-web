@@ -1,12 +1,16 @@
-import React, { useRef, useEffect } from 'react';
-import { YOUZHIQU_PROJECT } from '../data';
+import React, { useRef, useEffect, useState } from 'react';
+import { YOUZHIQU_PROJECT, YouzhiquVideo } from '../data';
 import { motion } from 'motion/react';
 
 interface YouzhiquPageProps {
   onBack: () => void;
 }
 
-const VideoPlayer: React.FC<{ videoUrl: string; coverImage?: string }> = ({ videoUrl, coverImage }) => {
+const VideoPlayer: React.FC<{
+  videoUrl: string;
+  coverImage?: string;
+  onAspectRatioChange?: (width: number, height: number) => void;
+}> = ({ videoUrl, coverImage, onAspectRatioChange }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -39,6 +43,12 @@ const VideoPlayer: React.FC<{ videoUrl: string; coverImage?: string }> = ({ vide
       preload="metadata"
       style={{ width: '100%', height: '100%', objectFit: 'contain' }}
       poster={coverImage || undefined}
+      onLoadedMetadata={(event) => {
+        const currentVideo = event.currentTarget;
+        if (currentVideo.videoWidth > 0 && currentVideo.videoHeight > 0) {
+          onAspectRatioChange?.(currentVideo.videoWidth, currentVideo.videoHeight);
+        }
+      }}
     >
       <source src={videoUrl} type="video/mp4" />
       您的浏览器不支持视频播放
@@ -46,77 +56,69 @@ const VideoPlayer: React.FC<{ videoUrl: string; coverImage?: string }> = ({ vide
   );
 };
 
+const getInitialVideoRatio = (video: YouzhiquVideo) => {
+  const isGardenVideo = video.projectTag === '我的花园世界';
+  const isKnownHorizontal = video.videoUrl.includes('_F_');
+
+  if (isGardenVideo && !isKnownHorizontal) {
+    return { ratio: '9/16', value: 9 / 16 };
+  }
+
+  return { ratio: '16/9', value: 16 / 9 };
+};
+
+const ProjectVideoCard: React.FC<{ video: YouzhiquVideo; index: number }> = ({ video, index }) => {
+  const initialRatio = getInitialVideoRatio(video);
+  const [frameRatio, setFrameRatio] = useState(initialRatio.ratio);
+  const [frameRatioValue, setFrameRatioValue] = useState(initialRatio.value);
+  const isPortrait = frameRatioValue < 1;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1, duration: 0.3 }}
+      className={`pop-card project-tape-card mb-6 ${isPortrait ? 'project-tape-card-portrait' : 'project-tape-card-landscape'}`}
+      data-project-tag={video.projectTag || '龙骑士学园'}
+    >
+      <div
+        className="pop-video-container portfolio-video-frame portfolio-video-frame-horizontal mb-4"
+        style={{
+          aspectRatio: frameRatio,
+          width: isPortrait ? 'min(100%, 390px)' : '100%',
+          marginInline: isPortrait ? 'auto' : undefined,
+        }}
+      >
+        {video.videoUrl ? (
+          <VideoPlayer
+            videoUrl={video.videoUrl}
+            coverImage={video.coverImage || undefined}
+            onAspectRatioChange={(width, height) => {
+              setFrameRatio(`${width}/${height}`);
+              setFrameRatioValue(width / height);
+            }}
+          />
+        ) : (
+          <div className="flex items-center justify-center text-white h-full">
+            <div className="text-center">
+              <div className="text-4xl mb-2">🎬</div>
+              <p>广告视频 {index + 1}</p>
+              <p className="text-xs opacity-60 mt-1">（请填入腾讯云 COS 链接）</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
 export const YouzhiquPage: React.FC<YouzhiquPageProps> = ({ onBack }) => {
   return (
     <div className="h-full overflow-auto">
       <div className="pt-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2">
+        <div className="youzhiqu-video-grid">
           {YOUZHIQU_PROJECT.videos.map((video, index) => (
-            <motion.div
-              key={video.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.3 }}
-              className="pop-card mb-6 mx-4"
-            >
-              {/* 16:9 横屏视频 */}
-              <div className="pop-video-container mb-4" style={{ aspectRatio: '16/9' }}>
-                {video.videoUrl ? (
-                  <VideoPlayer videoUrl={video.videoUrl} coverImage={video.coverImage || undefined} />
-                ) : (
-                  <div className="flex items-center justify-center text-white h-full">
-                    <div className="text-center">
-                      <div className="text-4xl mb-2">🎬</div>
-                      <p>广告视频 {index + 1}</p>
-                      <p className="text-xs opacity-60 mt-1">（请填入腾讯云 COS 链接）</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* 投放数据 - 横向排列 */}
-              <div className="pop-card">
-                <div className="pop-card-title" style={{ fontFamily: "'ZCOOL KuaiLe', 'Microsoft YaHei', sans-serif", fontSize: '22px', fontWeight: 300 }}>📊 投放数据</div>
-                <div className="pop-metrics-grid">
-                  {video.metrics.spend && (
-                    <div className="pop-metric-item">
-                      <div className="pop-metric-label">花费</div>
-                      <div className="pop-metric-value">{video.metrics.spend}</div>
-                    </div>
-                  )}
-                  {video.metrics.ctr && (
-                    <div className="pop-metric-item">
-                      <div className="pop-metric-label">CTR</div>
-                      <div className="pop-metric-value">{video.metrics.ctr}</div>
-                    </div>
-                  )}
-                  {video.metrics.cpm && (
-                    <div className="pop-metric-item">
-                      <div className="pop-metric-label">CPM</div>
-                      <div className="pop-metric-value">{video.metrics.cpm}</div>
-                    </div>
-                  )}
-                  {video.metrics.cvr && video.metrics.cvr !== '暂无' && (
-                    <div className="pop-metric-item">
-                      <div className="pop-metric-label">CVR</div>
-                      <div className="pop-metric-value">{video.metrics.cvr}</div>
-                    </div>
-                  )}
-                  {video.metrics.roas && video.metrics.roas !== '暂无' && (
-                    <div className="pop-metric-item">
-                      <div className="pop-metric-label">ROAS</div>
-                      <div className="pop-metric-value">{video.metrics.roas}</div>
-                    </div>
-                  )}
-                  {video.metrics.unitPrice && video.metrics.unitPrice !== '暂无' && (
-                    <div className="pop-metric-item">
-                      <div className="pop-metric-label">单价</div>
-                      <div className="pop-metric-value">{video.metrics.unitPrice}</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
+            <ProjectVideoCard key={video.id} video={video} index={index} />
           ))}
         </div>
       </div>
